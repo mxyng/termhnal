@@ -1,0 +1,200 @@
+package main
+
+import (
+	"log"
+	"sort"
+
+	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/viewport"
+	bbt "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+)
+
+type state int
+
+const (
+	stateTop state = iota
+	stateNew
+	stateBest
+	stateAsk
+	stateShow
+	stateJob
+	stateStory
+)
+
+func (s state) String() string {
+	switch s {
+	case stateTop:
+		return "Top"
+	case stateNew:
+		return "New"
+	case stateBest:
+		return "Best"
+	case stateAsk:
+		return "Ask"
+	case stateShow:
+		return "Show"
+	case stateJob:
+		return "Job"
+	default:
+		return ""
+	}
+}
+
+type model struct {
+	hn *HN
+
+	current, previous state
+	*Story
+
+	list      list.Model
+	listStyle lipgloss.Style
+
+	viewport      viewport.Model
+	viewportStyle lipgloss.Style
+}
+
+func (m model) Init() bbt.Cmd {
+	return m.fetchStories()
+}
+
+func (m model) fetchStories() bbt.Cmd {
+	var fn func() ([]int, error)
+	switch m.current {
+	case stateTop:
+		fn = m.hn.Top
+	case stateNew:
+		fn = m.hn.New
+	case stateBest:
+		fn = m.hn.Best
+	case stateAsk:
+		fn = m.hn.Ask
+	case stateShow:
+		fn = m.hn.Show
+	case stateJob:
+		fn = m.hn.Job
+	}
+
+	ids, err := fn()
+	if err != nil {
+		return nil
+	}
+
+	var cmds []bbt.Cmd
+	for i := range ids {
+		i := i
+		cmds = append(cmds, func() bbt.Msg {
+			story, err := m.hn.Story(i, ids[i])
+			if err != nil {
+				return err
+			}
+
+			return story
+		})
+	}
+
+	return bbt.Batch(cmds...)
+}
+
+func (m model) fetchComments(parent *Item) bbt.Cmd {
+	var cmds []bbt.Cmd
+	for i := range parent.Kids {
+		i := i
+		cmds = append(cmds, func() bbt.Msg {
+			comment, err := m.hn.Comment(i, parent.Kids[i])
+			if err != nil {
+				return err
+			}
+
+			parent.Comments = append(parent.Comments, comment)
+			return comment
+		})
+	}
+
+	return bbt.Batch(cmds...)
+}
+
+func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
+	switch msg := msg.(type) {
+	case bbt.KeyMsg:
+		switch msg.Type {
+		case bbt.KeyCtrlC:
+			return m, bbt.Quit
+		case bbt.KeyF5:
+			m.list.SetItems([]list.Item{})
+			return m, m.fetchStories()
+		case bbt.KeyEnter:
+			if m.current < stateStory {
+				m.previous = m.current
+				m.current = stateStory
+
+				m.Story = m.list.SelectedItem().(*Story)
+				m.viewport.SetContent(m.Story.String())
+				return m, m.fetchComments(m.Story.Item)
+			}
+		case bbt.KeyEsc:
+			if m.current == stateStory {
+				m.current = m.previous
+				return m, nil
+			}
+		}
+	case bbt.WindowSizeMsg:
+		h, v := m.listStyle.GetFrameSize()
+		m.list.SetSize(msg.Width-h, msg.Height-v)
+
+		h, v = m.viewportStyle.GetFrameSize()
+		m.viewport.Width = msg.Width - h
+		m.viewport.Height = msg.Height - v
+	case *Story:
+		items := m.list.Items()
+		items = append(items, msg)
+
+		sort.Slice(items, func(i, j int) bool {
+			return items[i].(*Story).Rank() < items[j].(*Story).Rank()
+		})
+
+		return m, m.list.SetItems(items)
+	case *Comment:
+		m.viewport.SetContent(m.Story.String())
+		return m, m.fetchComments(msg.Item)
+	}
+
+	var cmd bbt.Cmd
+	switch m.current {
+	case stateStory:
+		m.viewport, cmd = m.viewport.Update(msg)
+	default:
+		m.list.Title = m.current.String()
+		m.list, cmd = m.list.Update(msg)
+	}
+
+	return m, cmd
+}
+
+func (m model) View() string {
+	var view string
+	switch m.current {
+	case stateStory:
+		view = m.viewportStyle.Render(m.viewport.View())
+	default:
+		view = m.listStyle.Render(m.list.View())
+	}
+
+	return view
+}
+
+func main() {
+	p := bbt.NewProgram(model{
+		hn: NewHN(),
+
+		list:      list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0),
+		listStyle: lipgloss.NewStyle().Margin(1, 2),
+
+		viewport:      viewport.New(0, 0),
+		viewportStyle: lipgloss.NewStyle().Margin(1, 2),
+	})
+
+	if _, err := p.Run(); err != nil {
+		log.Fatal(err)
+	}
+}
