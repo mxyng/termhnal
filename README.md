@@ -27,16 +27,16 @@ go install github.com/mxyng/term-hn@main
 
 ### List View
 
-- <kbd>1</kbd> Top stories
-- <kbd>2</kbd> new stories
-- <kbd>3</kbd> best stories
-- <kbd>4</kbd> ask hn
-- <kbd>5</kbd> show hn
+- <kbd>1</kbd> top
+- <kbd>2</kbd> new
+- <kbd>3</kbd> best
+- <kbd>4</kbd> ask
+- <kbd>5</kbd> show
 - <kbd>6</kbd> jobs
 - <kbd>k</kbd> <kbd>Up</kbd> up
 - <kbd>j</kbd> <kbd>Down</kbd> down
-- <kbd>l</kbd> <kbd>PageDown</kbd> next page
-- <kbd>h</kbd> <kbd>PageUp</kbd> previous page
+- <kbd>l</kbd> <kbd>Left</kbd> <kbd>PageDown</kbd> next page
+- <kbd>h</kbd> <kbd>Right</kbd> <kbd>PageUp</kbd> previous page
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
 - <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>/</kbd> search
