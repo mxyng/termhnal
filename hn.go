@@ -141,12 +141,18 @@ func (s Story) FilterValue() string {
 }
 
 func (s Story) Title() string {
-	link, err := url.Parse(s.URL)
-	if err != nil {
-		log.Fatal(err)
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "%d. %s", s.Rank(), s.Item.Title)
+
+	if s.URL != "" {
+		link, err := url.Parse(s.URL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Fprintf(&sb, " (%s)", link.Host)
 	}
 
-	return fmt.Sprintf("%d. %s (%s)", s.Rank(), s.Item.Title, link.Host)
+	return sb.String()
 }
 
 func (s Story) Description() string {
