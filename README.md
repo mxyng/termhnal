@@ -6,7 +6,8 @@ Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https
 - [ ] Text posts and comments
   - [ ] Word wrapping
   - [ ] Convert HTML to Markdown
-- [ ] Story list switching (new, ask, show, etc.)
+- [x] Story list switching (new, ask, show, etc.)
+- [ ] Save stories to read later
 
 ## Install
 
