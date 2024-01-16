@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"html"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -12,6 +12,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/segmentio/textio"
+	"golang.org/x/net/html"
 )
 
 // ref: https://github.com/HackerNews/API
@@ -140,7 +141,12 @@ func (s Story) FilterValue() string {
 }
 
 func (s Story) Title() string {
-	return fmt.Sprintf("%d. %s", s.Rank(), s.Item.Title)
+	link, err := url.Parse(s.URL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return fmt.Sprintf("%d. %s (%s)", s.Rank(), s.Item.Title, link.Host)
 }
 
 func (s Story) Description() string {
@@ -168,7 +174,7 @@ func (s Story) String() string {
 	} else if s.Text != "" {
 		fmt.Fprintln(&sb)
 		pw := textio.NewPrefixWriter(&sb, "> ")
-		fmt.Fprintln(pw, html.UnescapeString(s.Text))
+		fmt.Fprintln(pw, htmlString(s.Text))
 	}
 
 	for _, comment := range s.Comments {
@@ -199,7 +205,7 @@ var titleStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"})
 
 var descriptionStyle = titleStyle.Copy().
-	Foreground(lipgloss.AdaptiveColor{Light: "#A49FA5", Dark: "#777777"})
+	Foreground(lipgloss.AdaptiveColor{Light: "#a49fa5", Dark: "#777777"})
 
 var linkStyle = descriptionStyle.Copy().
 	Italic(true).
@@ -210,7 +216,7 @@ func (c Comment) Title() string {
 }
 
 func (c Comment) Description() string {
-	return descriptionStyle.Render(html.UnescapeString(c.Text))
+	return htmlString(c.Text)
 }
 
 func (c Comment) String() string {
@@ -220,13 +226,42 @@ func (c Comment) String() string {
 
 		pw := textio.NewPrefixWriter(&sb, "│ ")
 		fmt.Fprintln(pw, c.Title())
-		fmt.Fprintln(pw, c.Description())
+		fmt.Fprintln(pw, descriptionStyle.Render(c.Description()))
 
 		for _, comment := range c.Comments {
 			fmt.Fprint(pw, comment.String())
 		}
 	}
 
+	return sb.String()
+}
+
+func htmlString(t string) string {
+	root, err := html.Parse(strings.NewReader(html.UnescapeString(t)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var sb strings.Builder
+
+	var fn func(*html.Node)
+	fn = func(node *html.Node) {
+		switch node.Type {
+		case html.TextNode:
+			sb.WriteString(node.Data)
+		case html.ElementNode:
+			switch node.Data {
+			case "p":
+				sb.WriteString("\n\n")
+			}
+		}
+
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			fn(child)
+		}
+	}
+
+	fn(root)
 	return sb.String()
 }
 
