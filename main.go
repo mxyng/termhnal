@@ -149,6 +149,14 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 				m.list.SetItems([]list.Item{})
 				return m, m.fetchStories()
 			}
+		case "g":
+			if m.current == stateStory {
+				m.viewport.GotoTop()
+			}
+		case "G":
+			if m.current == stateStory {
+				m.viewport.GotoBottom()
+			}
 		}
 	case bbt.WindowSizeMsg:
 		h, v := m.listStyle.GetFrameSize()
