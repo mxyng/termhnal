@@ -154,13 +154,21 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 					return m, m.fetchStories()
 				}
 			}
-		case "g":
+		case "g", "home":
 			if m.current == stateStory {
 				m.viewport.GotoTop()
 			}
-		case "G":
+		case "G", "end":
 			if m.current == stateStory {
 				m.viewport.GotoBottom()
+			}
+		case "h", "left":
+			if m.current == stateStory {
+				m.viewport.ViewUp()
+			}
+		case "l", "right":
+			if m.current == stateStory {
+				m.viewport.ViewDown()
 			}
 		}
 	case bbt.WindowSizeMsg:

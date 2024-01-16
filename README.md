@@ -35,8 +35,8 @@ go install github.com/mxyng/term-hn@main
 - <kbd>6</kbd> jobs
 - <kbd>k</kbd> <kbd>Up</kbd> up
 - <kbd>j</kbd> <kbd>Down</kbd> down
-- <kbd>l</kbd> <kbd>Left</kbd> <kbd>PageDown</kbd> next page
-- <kbd>h</kbd> <kbd>Right</kbd> <kbd>PageUp</kbd> previous page
+- <kbd>h</kbd> <kbd>Left</kbd> <kbd>PageUp</kbd> previous page
+- <kbd>l</kbd> <kbd>Right</kbd> <kbd>PageDown</kbd> next page
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
 - <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>/</kbd> search
@@ -48,6 +48,8 @@ go install github.com/mxyng/term-hn@main
 
 - <kbd>k</kbd> <kbd>Up</kbd> scroll up
 - <kbd>j</kbd> <kbd>Down</kbd> scroll down
+- <kbd>h</kbd> <kbd>Left</kbd> <kbd>PageUp</kbd> previous page
+- <kbd>l</kbd> <kbd>Right</kbd> <kbd>PageDown</kbd> next page
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
 - <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>q</kbd> <kbd>Esc</kbd> back to list
