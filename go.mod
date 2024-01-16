@@ -1,4 +1,4 @@
-module github.com/mxyng/term-hn
+module github.com/mxyng/termhnal
 
 go 1.20
 

@@ -1,4 +1,4 @@
-# term-hn
+# termhnal
 Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https://github.com/charmbracelet/bubbletea).
 
 ### TODO
@@ -18,7 +18,7 @@ Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https
 Requires Go 1.20 or higher.
 
 ```shell
-go install github.com/mxyng/term-hn@main
+go install github.com/mxyng/termhnal@main
 ```
 
 ## Key Maps
