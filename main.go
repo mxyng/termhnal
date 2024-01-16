@@ -125,8 +125,10 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 		case "ctrl+d":
 			return m, bbt.Quit
 		case "f5":
-			m.list.SetItems([]list.Item{})
-			return m, m.fetchStories()
+			if m.current < stateStory {
+				m.list.SetItems([]list.Item{})
+				return m, m.fetchStories()
+			}
 		case "enter":
 			if m.current < stateStory {
 				m.previous = m.current
