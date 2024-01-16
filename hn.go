@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/muesli/reflow/wordwrap"
 	"github.com/segmentio/textio"
 	"golang.org/x/net/html"
 )
@@ -170,7 +171,7 @@ func (s Story) Description() string {
 	return fmt.Sprintf("%s%d points by %s %s | %d comments", prefix, s.Score, s.By, humanize(time.Unix(s.Time, 0)), s.Descendants)
 }
 
-func (s Story) String() string {
+func (s Story) Format(w int) string {
 	var sb strings.Builder
 
 	fmt.Fprintf(&sb, "%s\n", titleStyle.Render(s.Item.Title))
@@ -180,11 +181,11 @@ func (s Story) String() string {
 		fmt.Fprintln(&sb, linkStyle.Render(s.URL))
 	} else if s.Text != "" {
 		fmt.Fprintln(&sb)
-		fmt.Fprintln(&sb, descriptionStyle.Render(htmlString(s.Text)))
+		fmt.Fprintln(&sb, descriptionStyle.Render(wordwrap.String(htmlString(s.Text), w)))
 	}
 
 	for _, comment := range s.Comments {
-		sb.WriteString(comment.String())
+		sb.WriteString(comment.Format(w - 2))
 	}
 
 	return sb.String()
@@ -223,17 +224,17 @@ func (c Comment) Description() string {
 	return htmlString(c.Text)
 }
 
-func (c Comment) String() string {
+func (c Comment) Format(w int) string {
 	var sb strings.Builder
 	if c.Text != "" {
 		fmt.Fprintln(&sb)
 
 		pw := textio.NewPrefixWriter(&sb, "│ ")
 		fmt.Fprintln(pw, c.Title())
-		fmt.Fprintln(pw, descriptionStyle.Render(c.Description()))
+		fmt.Fprintln(pw, descriptionStyle.Render(wordwrap.String(c.Description(), w-2)))
 
 		for _, comment := range c.Comments {
-			fmt.Fprint(pw, comment.String())
+			fmt.Fprint(pw, comment.Format(w))
 		}
 	}
 

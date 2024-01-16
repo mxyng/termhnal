@@ -135,7 +135,6 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 				m.current = stateStory
 
 				m.Story = m.list.SelectedItem().(*Story)
-				m.viewport.SetContent(m.Story.String())
 				return m, m.fetchComments(m.Story.Item)
 			}
 		case "esc", "q":
@@ -188,7 +187,7 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 
 		return m, m.list.SetItems(items)
 	case *Comment:
-		m.viewport.SetContent(m.Story.String())
+		m.viewport.SetContent(m.Story.Format(m.viewport.Width))
 		return m, m.fetchComments(msg.Item)
 	}
 
@@ -209,6 +208,7 @@ func (m model) View() string {
 	var view string
 	switch m.current {
 	case stateStory:
+		m.viewport.SetContent(m.Story.Format(m.viewport.Width))
 		view = m.viewportStyle.Render(m.viewport.View())
 	default:
 		view = m.listStyle.Render(m.list.View())
