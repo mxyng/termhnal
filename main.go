@@ -120,6 +120,9 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 	case bbt.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
+			// noop; mask ctrl+c so it doesn't exit
+			return m, nil
+		case "ctrl+d":
 			return m, bbt.Quit
 		case "f5":
 			m.list.SetItems([]list.Item{})
