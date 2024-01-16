@@ -143,13 +143,16 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 				m.current = m.previous
 				return m, nil
 			}
-		case "1", "2", "3", "4", "5":
+		case "1", "2", "3", "4", "5", "6":
 			if m.current < stateStory {
 				m.previous = m.current
 				s, _ := strconv.Atoi(msg.String())
-				m.current = state(s)
-				m.list.SetItems([]list.Item{})
-				return m, m.fetchStories()
+
+				if int(m.current) != s-1 {
+					m.current = state(s - 1)
+					m.list.SetItems([]list.Item{})
+					return m, m.fetchStories()
+				}
 			}
 		case "g":
 			if m.current == stateStory {
