@@ -42,7 +42,7 @@ go install github.com/mxyng/term-hn@main
 - <kbd>/</kbd> search
 - <kbd>q</kbd> <kbd>Esc</kbd> quit
 - <kbd>F5</kbd> refresh current list
-- <kbd>?<kbd> help
+- <kbd>?</kbd> help
 
 ### Story View
 
