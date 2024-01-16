@@ -180,8 +180,7 @@ func (s Story) String() string {
 		fmt.Fprintln(&sb, linkStyle.Render(s.URL))
 	} else if s.Text != "" {
 		fmt.Fprintln(&sb)
-		pw := textio.NewPrefixWriter(&sb, "> ")
-		fmt.Fprintln(pw, htmlString(s.Text))
+		fmt.Fprintln(&sb, descriptionStyle.Render(htmlString(s.Text)))
 	}
 
 	for _, comment := range s.Comments {
