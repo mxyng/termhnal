@@ -9,6 +9,7 @@ Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https
 - [x] Story list switching (new, ask, show, etc.)
 - [ ] Save stories to read later
 - [ ] Footer and help in story view
+- [ ] Replace viewport with custom model
 
 ## Install
 
