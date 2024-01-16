@@ -23,7 +23,7 @@ go install github.com/mxyng/term-hn@main
 
 ## Key Maps
 
-- <kbd>ctrl+d<kbd> quit
+- <kbd>ctrl+d</kbd> quit
 
 ### List View
 
