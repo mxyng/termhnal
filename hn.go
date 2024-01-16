@@ -149,6 +149,7 @@ func (s Story) Title() string {
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		fmt.Fprintf(&sb, " (%s)", link.Host)
 	}
 
@@ -186,8 +187,6 @@ func (s Story) String() string {
 	for _, comment := range s.Comments {
 		sb.WriteString(comment.String())
 	}
-
-	fmt.Fprintln(&sb)
 
 	return sb.String()
 }
