@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"sort"
+	"strconv"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -117,13 +118,13 @@ func (m model) fetchComments(parent *Item) bbt.Cmd {
 func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 	switch msg := msg.(type) {
 	case bbt.KeyMsg:
-		switch msg.Type {
-		case bbt.KeyCtrlC:
+		switch msg.String() {
+		case "ctrl+c":
 			return m, bbt.Quit
-		case bbt.KeyF5:
+		case "f5":
 			m.list.SetItems([]list.Item{})
 			return m, m.fetchStories()
-		case bbt.KeyEnter:
+		case "enter":
 			if m.current < stateStory {
 				m.previous = m.current
 				m.current = stateStory
@@ -132,10 +133,18 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 				m.viewport.SetContent(m.Story.String())
 				return m, m.fetchComments(m.Story.Item)
 			}
-		case bbt.KeyEsc:
+		case "esc", "q":
 			if m.current == stateStory {
 				m.current = m.previous
 				return m, nil
+			}
+		case "1", "2", "3", "4", "5":
+			if m.current < stateStory {
+				m.previous = m.current
+				s, _ := strconv.Atoi(msg.String())
+				m.current = state(s)
+				m.list.SetItems([]list.Item{})
+				return m, m.fetchStories()
 			}
 		}
 	case bbt.WindowSizeMsg:
@@ -164,7 +173,6 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 	case stateStory:
 		m.viewport, cmd = m.viewport.Update(msg)
 	default:
-		m.list.Title = m.current.String()
 		m.list, cmd = m.list.Update(msg)
 	}
 
@@ -172,6 +180,8 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 }
 
 func (m model) View() string {
+	m.list.Title = m.current.String()
+
 	var view string
 	switch m.current {
 	case stateStory:
