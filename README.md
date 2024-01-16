@@ -8,6 +8,7 @@ Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https
   - [x] Convert HTML to Markdown
     - [ ] Handle HTML tags
 - [x] Story list switching (new, ask, show, etc.)
+  - [ ] Display non-active story lists
 - [ ] Save stories to read later
 - [ ] Footer and help in story view
 - [ ] Replace viewport with custom model
