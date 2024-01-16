@@ -23,11 +23,11 @@ go install github.com/mxyng/term-hn@main
 
 ## Key Maps
 
-- <kbd>ctrl+d</kbd> quit
+- <kbd>Ctrl+d</kbd> quit
 
 ### List View
 
-- <kbd>1</kbd> top stories
+- <kbd>1</kbd> Top stories
 - <kbd>2</kbd> new stories
 - <kbd>3</kbd> best stories
 - <kbd>4</kbd> ask hn
@@ -38,10 +38,10 @@ go install github.com/mxyng/term-hn@main
 - <kbd>l</kbd> <kbd>PageDown</kbd> next page
 - <kbd>h</kbd> <kbd>PageUp</kbd> previous page
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
-- <kbd>shift+g</kbd> <kbd>End</kbd> go to end
+- <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>/</kbd> search
 - <kbd>q</kbd> <kbd>Esc</kbd> quit
-- <kbd>f5</kbd> refresh current list
+- <kbd>F5</kbd> refresh current list
 - <kbd>?<kbd> help
 
 ### Story View
@@ -49,5 +49,5 @@ go install github.com/mxyng/term-hn@main
 - <kbd>k</kbd> <kbd>Up</kbd> scroll up
 - <kbd>j</kbd> <kbd>Down</kbd> scroll down
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
-- <kbd>shift+g</kbd> <kbd>End</kbd> go to end
+- <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>q</kbd> <kbd>Esc</kbd> back to list
