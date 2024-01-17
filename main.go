@@ -134,11 +134,14 @@ func (m model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 				m.previous = m.current
 				m.current = stateStory
 
+				m.viewport.GotoTop()
 				m.Story = m.list.SelectedItem().(*Story)
 				return m, m.fetchComments(m.Story.Item)
 			}
 		case "esc", "q":
 			if m.current == stateStory {
+				m.Story.Item.Comments = []*Comment{}
+				m.viewport.SetContent("")
 				m.current = m.previous
 				return m, nil
 			}
