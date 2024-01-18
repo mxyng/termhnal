@@ -209,15 +209,19 @@ func (c Comment) FilterValue() string {
 var titleStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"})
 
-var descriptionStyle = titleStyle.Copy().
+var descriptionStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.AdaptiveColor{Light: "#a49fa5", Dark: "#777777"})
 
-var linkStyle = descriptionStyle.Copy().
+var linkStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#a49fa5")).
 	Italic(true).
 	Underline(true)
 
+var usernameStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.AdaptiveColor{Light: "#ff6600", Dark: "#ff6600"})
+
 func (c Comment) Title() string {
-	return titleStyle.Render(fmt.Sprintf("%s %s", c.By, humanize(time.Unix(c.Time, 0))))
+	return fmt.Sprintf("%s %s", usernameStyle.Render(c.By), titleStyle.Render(humanize(time.Unix(c.Time, 0))))
 }
 
 func (c Comment) Description() string {
