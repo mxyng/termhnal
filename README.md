@@ -16,10 +16,9 @@ Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https
   - [x] Convert HTML to Markdown
     - [ ] Handle HTML tags
 - [x] Story list switching (new, ask, show, etc.)
-  - [ ] Display non-active story lists
+  - [x] Display non-active story lists
 - [ ] Save stories to read later
 - [ ] Footer and help in story view
-- [ ] Replace viewport with custom model
 
 ## Install
 
@@ -49,8 +48,6 @@ go install github.com/mxyng/termhnal@main
 - <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>/</kbd> search
 - <kbd>q</kbd> <kbd>Esc</kbd> quit
-- <kbd>F5</kbd> refresh current list
-- <kbd>?</kbd> help
 
 ### Story View
 

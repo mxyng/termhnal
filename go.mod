@@ -6,10 +6,10 @@ require (
 	github.com/charmbracelet/bubbles v0.17.1
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/lipgloss v0.9.1
-	github.com/muesli/reflow v0.3.0
-	github.com/segmentio/textio v1.2.0
 	golang.org/x/net v0.20.0
 )
+
+require github.com/muesli/reflow v0.3.0 // indirect
 
 require (
 	github.com/atotto/clipboard v0.1.4 // indirect
