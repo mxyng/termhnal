@@ -144,6 +144,8 @@ func (p *PaneView) Render() {
 			fmt.Fprintln(&p.content, p.styleDescription.Copy().Width(p.style.GetWidth()).Render(HTMLText(s.Text)))
 		}
 
+		h, _ := p.styleComment.GetFrameSize()
+
 		var view func(lipgloss.Style, []*Comment) string
 		view = func(style lipgloss.Style, comments []*Comment) string {
 			var lines []string
@@ -155,7 +157,7 @@ func (p *PaneView) Render() {
 
 					if len(comment.Comments) > 0 {
 						fmt.Fprintln(&sb)
-						fmt.Fprint(&sb, view(style.Copy().Width(style.GetWidth()-2), comment.Comments))
+						fmt.Fprint(&sb, view(style.Copy().Width(style.GetWidth()-h), comment.Comments))
 					}
 
 					lines = append(lines, style.Render(sb.String()))
@@ -165,7 +167,7 @@ func (p *PaneView) Render() {
 			return strings.Join(lines, "\n")
 		}
 
-		fmt.Fprintln(&p.content, view(p.styleComment.Copy().Width(p.style.GetWidth()-2), s.Comments))
+		fmt.Fprintln(&p.content, view(p.styleComment.Copy().Width(p.style.GetWidth()-h), s.Comments))
 	}
 
 	p.viewport.SetContent(p.content.String())
