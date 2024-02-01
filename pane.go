@@ -287,6 +287,8 @@ func (p *PaneList) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 			if p.model.Index() == 0 {
 				return p, Focus("header")
 			}
+		case "tab":
+			return p, Focus("header")
 		}
 	}
 
@@ -357,6 +359,8 @@ func (p *PaneHeader) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		case "l", "right":
 			p.current = mod(p.current+1, len(p.states))
 		case "j", "down":
+			return p, Focus("list")
+		case "tab":
 			return p, Focus("list")
 		}
 	}
