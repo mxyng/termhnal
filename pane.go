@@ -113,6 +113,7 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		case "G", "end":
 			p.viewport.GotoBottom()
 		case "q", "esc":
+			p.viewport.GotoTop()
 			return p, Focus("list")
 		}
 	case bbt.WindowSizeMsg:
