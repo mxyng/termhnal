@@ -59,10 +59,10 @@ func HTMLText(t string) string {
 				case "href":
 					text = fmt.Sprintf("(%s %s)", n.Data, attribute.Val)
 					if n.Data == attribute.Val {
-						text = fmt.Sprintf("%s", attribute.Val)
+						text = attribute.Val
 					} else if trim := strings.TrimSuffix(n.Data, "..."); strings.HasPrefix(attribute.Val, trim) {
 						// HN truncates long links and appends "..."
-						text = fmt.Sprintf("%s", attribute.Val)
+						text = attribute.Val
 					}
 
 					continue
