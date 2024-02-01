@@ -241,6 +241,7 @@ func (p *PaneList) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		case "job":
 			fn = hn.Job
 		case "clear":
+			p.model.Select(0)
 			return p, p.model.SetItems([]list.Item{})
 		default:
 			return p, nil
