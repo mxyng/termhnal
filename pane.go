@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -50,9 +51,9 @@ type PaneView struct {
 
 	content strings.Builder
 
-	styleTitle       lipgloss.Style
-	styleDescription lipgloss.Style
-	styleComment     lipgloss.Style
+	styleTitle        lipgloss.Style
+	styleDescription  lipgloss.Style
+	styleCommentTitle lipgloss.Style
 }
 
 func NewPaneView() *PaneView {
@@ -63,12 +64,7 @@ func NewPaneView() *PaneView {
 			Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"}),
 		styleDescription: lipgloss.NewStyle().
 			Foreground(lipgloss.AdaptiveColor{Light: "#a49fa5", Dark: "#777777"}),
-		styleComment: lipgloss.NewStyle().
-			Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"}).
-			Border(lipgloss.NormalBorder(), false).
-			BorderLeft(true).
-			PaddingLeft(1).
-			MarginTop(1),
+		styleCommentTitle: lipgloss.NewStyle().Foreground(lipgloss.Color("#ff6600")),
 	}
 }
 
@@ -141,11 +137,17 @@ func (p *PaneView) Render() {
 		if s.URL != "" {
 			fmt.Fprintln(&p.content, p.styleDescription.Copy().Underline(true).Italic(true).Render(s.URL))
 		} else if s.Text != "" {
-			fmt.Fprintln(&p.content)
-			fmt.Fprintln(&p.content, p.styleDescription.Copy().Width(p.style.GetWidth()).Render(HTMLText(s.Text)))
+			fmt.Fprintln(&p.content, p.styleDescription.Copy().MarginTop(1).Width(p.style.GetWidth()).Render(HTMLText(s.Text)))
 		}
 
-		h, _ := p.styleComment.GetFrameSize()
+		styleComment := lipgloss.NewStyle().
+			Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"}).
+			Border(lipgloss.NormalBorder(), false).
+			BorderLeft(true).
+			PaddingLeft(1).
+			MarginTop(1)
+
+		h, _ := styleComment.GetFrameSize()
 
 		var view func(lipgloss.Style, []*Comment) string
 		view = func(style lipgloss.Style, comments []*Comment) string {
@@ -153,8 +155,13 @@ func (p *PaneView) Render() {
 			for _, comment := range comments {
 				if comment.By != "" {
 					var sb strings.Builder
-					fmt.Fprintln(&sb, comment.Title())
-					fmt.Fprint(&sb, comment.Description())
+					fmt.Fprintln(
+						&sb,
+						p.styleCommentTitle.Render(comment.By),
+						p.styleCommentTitle.Copy().Faint(true).Render(humanize(time.Unix(comment.Time, 0))),
+					)
+
+					sb.WriteString(HTMLText(comment.Text))
 
 					if len(comment.Comments) > 0 {
 						fmt.Fprintln(&sb)
@@ -168,7 +175,7 @@ func (p *PaneView) Render() {
 			return strings.Join(lines, "\n")
 		}
 
-		fmt.Fprintln(&p.content, view(p.styleComment.Copy().Width(p.style.GetWidth()-h), s.Comments))
+		fmt.Fprintln(&p.content, view(styleComment.Copy().Width(p.style.GetWidth()-h), s.Comments))
 	}
 
 	p.viewport.SetContent(p.content.String())

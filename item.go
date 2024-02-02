@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
 	"golang.org/x/net/html"
 )
 
@@ -46,26 +45,25 @@ func HTMLText(t string) string {
 	var sb strings.Builder
 
 	type state struct {
-		attributes []html.Attribute
+		element    string
+		attributes map[string]string
 	}
 
-	var fn func(*state, *html.Node)
-	fn = func(s *state, n *html.Node) {
+	var fn func(state, *html.Node)
+	fn = func(s state, n *html.Node) {
 		switch n.Type {
 		case html.TextNode:
 			text := n.Data
-			for _, attribute := range s.attributes {
-				switch attribute.Key {
-				case "href":
-					text = fmt.Sprintf("(%s %s)", n.Data, attribute.Val)
-					if n.Data == attribute.Val {
-						text = attribute.Val
-					} else if trim := strings.TrimSuffix(n.Data, "..."); strings.HasPrefix(attribute.Val, trim) {
+			switch s.element {
+			case "a":
+				if val, ok := s.attributes["href"]; ok {
+					text = fmt.Sprintf("(%s %s)", n.Data, val)
+					if n.Data == val {
+						text = val
+					} else if trim := strings.TrimSuffix(n.Data, "..."); strings.HasPrefix(val, trim) {
 						// HN truncates long links and appends "..."
-						text = attribute.Val
+						text = val
 					}
-
-					continue
 				}
 			}
 
@@ -73,7 +71,12 @@ func HTMLText(t string) string {
 		case html.ElementNode:
 			switch n.Data {
 			case "a":
-				s.attributes = append(s.attributes, n.Attr...)
+				s.element = n.Data
+				s.attributes = make(map[string]string)
+				for _, attr := range n.Attr {
+					// discard Namespace
+					s.attributes[attr.Key] = attr.Val
+				}
 			case "p":
 				sb.WriteString("\n\n")
 			}
@@ -82,11 +85,9 @@ func HTMLText(t string) string {
 		for child := n.FirstChild; child != nil; child = child.NextSibling {
 			fn(s, child)
 		}
-
-		s.attributes = nil
 	}
 
-	fn(&state{}, root)
+	fn(state{}, root)
 	return sb.String()
 }
 
@@ -154,17 +155,4 @@ func NewComment(rank int) *Comment {
 			Rank: rank,
 		},
 	}
-}
-
-func (c Comment) Title() string {
-	style := lipgloss.NewStyle().Foreground(lipgloss.Color("#ff6600"))
-	return fmt.Sprintf(
-		"%s %s",
-		style.Render(c.By),
-		style.Copy().Faint(true).Render(humanize(time.Unix(c.Time, 0))),
-	)
-}
-
-func (c Comment) Description() string {
-	return strings.TrimSpace(HTMLText(c.Text))
 }
