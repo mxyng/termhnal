@@ -22,7 +22,7 @@ func NewModel() *Model {
 
 func (m *Model) Init() bbt.Cmd {
 	return bbt.Sequence(
-		Focus("list"),
+		Activate("list"),
 		List("top"),
 	)
 }
@@ -37,7 +37,7 @@ func (m *Model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 		case "ctrl+d":
 			return m, bbt.Quit
 		}
-	case FocusMsg:
+	case ActivateMsg:
 		switch msg {
 		case "list":
 			m.active = m.list

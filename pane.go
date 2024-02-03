@@ -15,16 +15,18 @@ import (
 type Pane interface {
 	Update(bbt.Msg) (Pane, bbt.Cmd)
 	View() string
+	Activate() Pane
+	Deactivate()
 
 	Size() (width, height int)
 	SetSize(width, height int)
 }
 
-type FocusMsg string
+type ActivateMsg string
 
-func Focus(name string) bbt.Cmd {
+func Activate(name string) bbt.Cmd {
 	return func() bbt.Msg {
-		return FocusMsg(name)
+		return ActivateMsg(name)
 	}
 }
 
@@ -104,13 +106,16 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		return p, bbt.Batch(comments(msg.Value.Item)...)
 	case bbt.KeyMsg:
 		switch msg.String() {
+		case "k", "up":
+			if p.viewport.AtTop() {
+				return p, Activate("header")
+			}
 		case "g", "home":
 			p.viewport.GotoTop()
 		case "G", "end":
 			p.viewport.GotoBottom()
 		case "q", "esc":
-			p.viewport.GotoTop()
-			return p, Focus("list")
+			return p, Activate("list")
 		}
 	case bbt.WindowSizeMsg:
 		p.Render()
@@ -190,6 +195,14 @@ func (p *PaneView) SetSize(width, height int) {
 	h, v := p.style.GetFrameSize()
 	p.style = p.style.Width(width - h).Height(height - v)
 	p.viewport.Width, p.viewport.Height = width-h, height-v
+}
+
+func (p *PaneView) Activate() Pane {
+	p.viewport.GotoTop()
+	return p
+}
+
+func (p *PaneView) Deactivate() {
 }
 
 type ListType interface {
@@ -287,15 +300,15 @@ func (p *PaneList) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		case "enter":
 			story := p.model.SelectedItem().(*Story)
 			return p, bbt.Sequence(
-				Focus("view"),
+				Activate("view"),
 				View(story),
 			)
 		case "k", "up":
 			if p.model.Index() == 0 {
-				return p, Focus("header")
+				return p, Activate("header")
 			}
 		case "tab":
-			return p, Focus("header")
+			return p, Activate("header")
 		}
 	}
 
@@ -318,6 +331,13 @@ func (p *PaneList) SetSize(width, height int) {
 	p.model.SetSize(width-h, height-v)
 }
 
+func (p *PaneList) Activate() Pane {
+	return p
+}
+
+func (p *PaneList) Deactivate() {
+}
+
 type HeaderMsg int
 
 func Header(n int) bbt.Cmd {
@@ -327,22 +347,31 @@ func Header(n int) bbt.Cmd {
 }
 
 type PaneHeader struct {
-	current int
-	states  []lipgloss.Style
-	style   lipgloss.Style
+	index         int
+	width, height int
+	active        bool
+
+	style lipgloss.Style
+	items []lipgloss.Style
+	funcs []func() bbt.Cmd
 }
 
-func NewPaneHeader(states ...string) *PaneHeader {
+type PaneHeaderItem struct {
+	Name string
+	Func func() bbt.Cmd
+}
+
+func NewPaneHeader(items ...PaneHeaderItem) *PaneHeader {
 	pane := PaneHeader{
-		style: lipgloss.NewStyle().Margin(1, 2, 0),
+		style: lipgloss.NewStyle().Margin(1, 2),
 	}
 
 	style := lipgloss.NewStyle().
-		Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"}).
-		Margin(0, 2, 1, 0)
+		Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"})
 
-	for _, state := range states {
-		pane.states = append(pane.states, style.Copy().SetString(state))
+	for _, item := range items {
+		pane.items = append(pane.items, style.Copy().SetString(item.Name))
+		pane.funcs = append(pane.funcs, item.Func)
 	}
 
 	return &pane
@@ -351,24 +380,19 @@ func NewPaneHeader(states ...string) *PaneHeader {
 func (p *PaneHeader) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 	switch msg := msg.(type) {
 	case HeaderMsg:
-		p.current = int(msg)
-		return p, bbt.Sequence(
-			Focus("list"),
-			List("clear"),
-			List(p.states[p.current].Value()),
-		)
+		return p, p.funcs[int(msg)]()
 	case bbt.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			return p, Header(p.current)
+			return p, Header(p.index)
 		case "h", "left":
-			p.current = mod(p.current-1, len(p.states))
+			p.index = mod(p.index-1, len(p.items))
 		case "l", "right":
-			p.current = mod(p.current+1, len(p.states))
+			p.index = mod(p.index+1, len(p.items))
 		case "j", "down":
-			return p, Focus("list")
+			return p, Activate("list")
 		case "tab":
-			return p, Focus("list")
+			return p, Activate("list")
 		}
 	}
 
@@ -377,18 +401,37 @@ func (p *PaneHeader) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 
 func (p *PaneHeader) View() string {
 	var views []string
-	for i := range p.states {
-		state := p.states[i]
-		if i == p.current {
-			state = state.Copy().
-				Foreground(lipgloss.Color("#ff6600")).
-				Underline(true)
+	for i := range p.items {
+		state := p.items[i]
+		if i == p.index {
+			state = state.Copy().Underline(true)
+			if p.active {
+				state = state.Copy().Foreground(lipgloss.Color("#ff6600"))
+			}
+		}
+
+		if i < len(p.items)-1 {
+			state = state.Copy().MarginRight(2)
 		}
 
 		views = append(views, state.String())
 	}
 
-	return p.style.Render(lipgloss.JoinHorizontal(lipgloss.Top, views...))
+	var sb strings.Builder
+
+	left := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#ff6600")).
+		Bold(true).
+		Render("termhnal")
+	right := lipgloss.JoinHorizontal(lipgloss.Top, views...)
+
+	sb.WriteString(left)
+	if pad := p.width - lipgloss.Width(left) - lipgloss.Width(right); pad > 0 {
+		sb.WriteString(strings.Repeat(" ", pad))
+	}
+
+	sb.WriteString(right)
+	return p.style.Render(sb.String())
 }
 
 func (p *PaneHeader) Size() (width, height int) {
@@ -397,6 +440,17 @@ func (p *PaneHeader) Size() (width, height int) {
 }
 
 func (p *PaneHeader) SetSize(width, height int) {
+	h, v := p.style.GetFrameSize()
+	p.width, p.height = width-h, height-v
+}
+
+func (p *PaneHeader) Activate() Pane {
+	p.active = true
+	return p
+}
+
+func (p *PaneHeader) Deactivate() {
+	p.active = false
 }
 
 func mod(a, b int) int {
