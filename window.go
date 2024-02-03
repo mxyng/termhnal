@@ -96,14 +96,16 @@ type WindowList struct {
 
 func NewWindowList() *WindowList {
 	var items []PaneHeaderItem
-	for _, item := range []string{"Top", "New", "Best", "Ask", "Show", "Job"} {
+	values := []string{"Top", "New", "Best", "Ask", "Show", "Job"}
+	for i := range values {
+		value := values[i]
 		items = append(items, PaneHeaderItem{
-			Name: item,
+			Name: value,
 			Func: func() bbt.Cmd {
 				return bbt.Sequence(
 					Activate("list"),
 					List("clear"),
-					List(item),
+					List(value),
 				)
 			},
 		})

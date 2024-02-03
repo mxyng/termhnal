@@ -383,6 +383,7 @@ func NewPaneHeader(items ...PaneHeaderItem) *PaneHeader {
 func (p *PaneHeader) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 	switch msg := msg.(type) {
 	case HeaderMsg:
+		p.index = int(msg)
 		return p, p.funcs[int(msg)]()
 	case bbt.KeyMsg:
 		switch msg.String() {
