@@ -112,7 +112,7 @@ func (w *WindowList) Update(msg bbt.Msg) (Window, bbt.Cmd) {
 		if msg == "toggle" {
 			switch w.active.(type) {
 			case *PaneHeader:
-				msg = "view"
+				msg = "list"
 			case *PaneList:
 				msg = "header"
 			}
