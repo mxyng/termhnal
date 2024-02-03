@@ -238,6 +238,7 @@ func NewPaneList() *PaneList {
 	model.SetShowHelp(false)
 	model.SetShowStatusBar(false)
 	model.SetShowTitle(false)
+	model.SetShowPagination(false)
 	return &PaneList{
 		model: model,
 		style: lipgloss.NewStyle().Margin(1, 2),
@@ -451,6 +452,59 @@ func (p *PaneHeader) Activate() Pane {
 
 func (p *PaneHeader) Deactivate() {
 	p.active = false
+}
+
+type PaneFooter struct {
+	width, height int
+	style         lipgloss.Style
+	left, right   func() string
+}
+
+func NewPaneFooter(left, right func() string) *PaneFooter {
+	return &PaneFooter{
+		left:  left,
+		right: right,
+		style: lipgloss.NewStyle().
+			Foreground(lipgloss.AdaptiveColor{Light: "#a49fa5", Dark: "#777777"}).
+			Faint(true).
+			Margin(1, 2, 0),
+	}
+}
+
+func (p *PaneFooter) Update(bbt.Msg) (Pane, bbt.Cmd) {
+	return p, nil
+}
+
+func (p *PaneFooter) View() string {
+	var sb strings.Builder
+
+	left := p.left()
+	right := p.right()
+
+	sb.WriteString(left)
+	if fill := p.width - lipgloss.Width(left) - lipgloss.Width(right); fill > 0 {
+		sb.WriteString(strings.Repeat(" ", fill))
+	}
+
+	sb.WriteString(right)
+	return p.style.Render(sb.String())
+}
+
+func (p *PaneFooter) Size() (width, height int) {
+	_, v := p.style.GetFrameSize()
+	return 0, v + 1
+}
+
+func (p *PaneFooter) SetSize(width, height int) {
+	h, v := p.style.GetFrameSize()
+	p.width, p.height = width-h, height-v
+}
+
+func (p *PaneFooter) Activate() Pane {
+	return p
+}
+
+func (p *PaneFooter) Deactivate() {
 }
 
 func mod(a, b int) int {
