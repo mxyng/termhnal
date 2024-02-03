@@ -116,6 +116,8 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 			p.viewport.GotoBottom()
 		case "q", "esc":
 			return p, Activate("list")
+		case "tab":
+			return p, Activate("toggle")
 		}
 	case bbt.WindowSizeMsg:
 		p.Render()
@@ -308,7 +310,7 @@ func (p *PaneList) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 				return p, Activate("header")
 			}
 		case "tab":
-			return p, Activate("header")
+			return p, Activate("toggle")
 		}
 	}
 
@@ -389,10 +391,8 @@ func (p *PaneHeader) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 			p.index = mod(p.index-1, len(p.items))
 		case "l", "right":
 			p.index = mod(p.index+1, len(p.items))
-		case "j", "down":
-			return p, Activate("list")
-		case "tab":
-			return p, Activate("list")
+		case "j", "down", "tab":
+			return p, Activate("toggle")
 		}
 	}
 

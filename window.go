@@ -38,6 +38,15 @@ func NewWindowView() *WindowView {
 func (w *WindowView) Update(msg bbt.Msg) (Window, bbt.Cmd) {
 	switch msg := msg.(type) {
 	case ActivateMsg:
+		if msg == "toggle" {
+			switch w.active.(type) {
+			case *PaneHeader:
+				msg = "view"
+			case *PaneView:
+				msg = "header"
+			}
+		}
+
 		switch strings.ToLower(string(msg)) {
 		case "header":
 			w.active.Deactivate()
@@ -100,6 +109,15 @@ func NewWindowList() *WindowList {
 func (w *WindowList) Update(msg bbt.Msg) (Window, bbt.Cmd) {
 	switch msg := msg.(type) {
 	case ActivateMsg:
+		if msg == "toggle" {
+			switch w.active.(type) {
+			case *PaneHeader:
+				msg = "view"
+			case *PaneList:
+				msg = "header"
+			}
+		}
+
 		switch strings.ToLower(string(msg)) {
 		case "header":
 			w.active.Deactivate()
