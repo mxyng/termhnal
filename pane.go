@@ -114,7 +114,7 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 			p.viewport.GotoTop()
 		case "G", "end":
 			p.viewport.GotoBottom()
-		case "q", "esc", "backspace":
+		case "esc", "backspace":
 			return p, Activate("list")
 		case "tab":
 			return p, Activate("toggle")

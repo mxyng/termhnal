@@ -31,7 +31,7 @@ func (m *Model) Update(msg bbt.Msg) (bbt.Model, bbt.Cmd) {
 	switch msg := msg.(type) {
 	case bbt.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c":
+		case "q", "ctrl+c":
 			// mask off ctrl+c
 			return m, nil
 		case "ctrl+d":
