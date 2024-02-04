@@ -34,7 +34,7 @@ func NewWindowView() *WindowView {
 
 	window.footer = NewPaneFooter(
 		func() string {
-			return fmt.Sprintf("%3.f%%", window.view.viewport.ScrollPercent()*100)
+			return fmt.Sprintf("%3.f%%", window.view.model.ScrollPercent()*100)
 		},
 		func() string {
 			return ""

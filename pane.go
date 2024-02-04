@@ -48,8 +48,8 @@ func View[T ViewType](t T) bbt.Cmd {
 
 type PaneView struct {
 	*Story
-	style    lipgloss.Style
-	viewport viewport.Model
+	style lipgloss.Style
+	model viewport.Model
 
 	content strings.Builder
 
@@ -60,8 +60,8 @@ type PaneView struct {
 
 func NewPaneView() *PaneView {
 	return &PaneView{
-		style:    lipgloss.NewStyle().Margin(1, 2),
-		viewport: viewport.New(0, 0),
+		style: lipgloss.NewStyle().Margin(1, 2),
+		model: viewport.New(0, 0),
 		styleTitle: lipgloss.NewStyle().
 			Foreground(lipgloss.AdaptiveColor{Light: "#1a1a1a", Dark: "#dddddd"}),
 		styleDescription: lipgloss.NewStyle().
@@ -107,13 +107,13 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 	case bbt.KeyMsg:
 		switch msg.String() {
 		case "k", "up":
-			if p.viewport.AtTop() {
+			if p.model.AtTop() {
 				return p, Activate("header")
 			}
 		case "g", "home":
-			p.viewport.GotoTop()
+			p.model.GotoTop()
 		case "G", "end":
-			p.viewport.GotoBottom()
+			p.model.GotoBottom()
 		case "esc", "backspace":
 			return p, Activate("list")
 		case "tab":
@@ -124,12 +124,12 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 	}
 
 	var cmd bbt.Cmd
-	p.viewport, cmd = p.viewport.Update(msg)
+	p.model, cmd = p.model.Update(msg)
 	return p, cmd
 }
 
 func (p *PaneView) View() string {
-	return p.style.Render(p.viewport.View())
+	return p.style.Render(p.model.View())
 }
 
 func (p *PaneView) Render() {
@@ -185,7 +185,7 @@ func (p *PaneView) Render() {
 		fmt.Fprintln(&p.content, view(styleComment.Copy().Width(p.style.GetWidth()-h), s.Comments))
 	}
 
-	p.viewport.SetContent(p.content.String())
+	p.model.SetContent(p.content.String())
 }
 
 func (p *PaneView) Size() (width, height int) {
@@ -196,11 +196,11 @@ func (p *PaneView) Size() (width, height int) {
 func (p *PaneView) SetSize(width, height int) {
 	h, v := p.style.GetFrameSize()
 	p.style = p.style.Width(width - h).Height(height - v)
-	p.viewport.Width, p.viewport.Height = width-h, height-v
+	p.model.Width, p.model.Height = width-h, height-v
 }
 
 func (p *PaneView) Activate() Pane {
-	p.viewport.GotoTop()
+	p.model.GotoTop()
 	return p
 }
 
