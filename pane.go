@@ -56,6 +56,7 @@ type PaneView struct {
 	styleTitle        lipgloss.Style
 	styleDescription  lipgloss.Style
 	styleCommentTitle lipgloss.Style
+	styleOP           lipgloss.Style
 }
 
 func NewPaneView() *PaneView {
@@ -67,6 +68,7 @@ func NewPaneView() *PaneView {
 		styleDescription: lipgloss.NewStyle().
 			Foreground(lipgloss.AdaptiveColor{Light: "#a49fa5", Dark: "#777777"}),
 		styleCommentTitle: lipgloss.NewStyle().Foreground(lipgloss.Color("#ff6600")),
+		styleOP:           lipgloss.NewStyle().Foreground(lipgloss.Color("#0099ff")).SetString("OP"),
 	}
 }
 
@@ -160,11 +162,13 @@ func (p *PaneView) Render() {
 			for _, comment := range comments {
 				if comment.By != "" {
 					var sb strings.Builder
-					fmt.Fprintln(
-						&sb,
-						p.styleCommentTitle.Render(comment.By),
-						p.styleCommentTitle.Copy().Faint(true).Render(humanize(time.Unix(comment.Time, 0))),
-					)
+
+					by := p.styleCommentTitle.Render(comment.By)
+					if comment.By == s.By {
+						by = fmt.Sprintf("%s %s", by, p.styleOP.String())
+					}
+
+					fmt.Fprintln(&sb, by, p.styleCommentTitle.Copy().Faint(true).Render(humanize(time.Unix(comment.Time, 0))))
 
 					sb.WriteString(HTMLText(comment.Text))
 
