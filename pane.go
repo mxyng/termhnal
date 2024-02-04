@@ -114,8 +114,6 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 			p.model.GotoTop()
 		case "G", "end":
 			p.model.GotoBottom()
-		case "esc", "backspace":
-			return p, Activate("list")
 		case "tab":
 			return p, Activate("toggle")
 		}

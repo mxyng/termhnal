@@ -65,6 +65,11 @@ func (w *WindowView) Update(msg bbt.Msg) (Window, bbt.Cmd) {
 			w.active.Deactivate()
 			w.active = w.view.Activate()
 		}
+	case bbt.KeyMsg:
+		switch msg.String() {
+		case "esc", "backspace":
+			return w, Activate("list")
+		}
 	case bbt.WindowSizeMsg:
 		for _, pane := range []Pane{w.header, w.footer, w.view} {
 			pane.SetSize(msg.Width, msg.Height)
