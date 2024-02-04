@@ -48,7 +48,7 @@ func (h *HN) Job() ([]int, error) {
 
 func (h *HN) items(kind string) ([]int, error) {
 	requestURL := h.baseURL.JoinPath(fmt.Sprintf("/%sstories.json", kind))
-	request, err := http.NewRequestWithContext(context.Background(), "GET", requestURL.String(), nil)
+	request, err := http.NewRequestWithContext(context.Background(), http.MethodGet, requestURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (h *HN) items(kind string) ([]int, error) {
 
 func (h *HN) item(id int, item any) error {
 	requestURL := h.baseURL.JoinPath(fmt.Sprintf("/item/%d.json", id))
-	request, err := http.NewRequestWithContext(context.Background(), "GET", requestURL.String(), nil)
+	request, err := http.NewRequestWithContext(context.Background(), http.MethodGet, requestURL.String(), nil)
 	if err != nil {
 		return err
 	}
