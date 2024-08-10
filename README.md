@@ -1,15 +1,15 @@
 <p align="center">
-  <img alt="" src="https://github.com/user-attachments/assets/12071c2e-0aa0-453d-88e4-cc5517ddc01a">
+  <img alt="Termhnal Logo" src="https://github.com/user-attachments/assets/12071c2e-0aa0-453d-88e4-cc5517ddc01a">
   <img alt="GitHub License" src="https://img.shields.io/github/license/mxyng/termhnal">
   <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/mxyng/termhnal">
+  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/mxyng/termhnal/build.yaml">
   <img alt="GitHub Issues" src="https://img.shields.io/github/issues/mxyng/termhnal">
   <img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/mxyng/termhnal">
-  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/mxyng/termhnal/build.yaml">
   <img alt="Docker Image Version" src="https://img.shields.io/docker/v/mxyng/termhnal">
   <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/mxyng/termhnal">
   <img alt="Docker Image Size" src="https://img.shields.io/docker/image-size/mxyng/termhnal">
-  <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/mxyng/termhnal/total">
-  <img alt="GitHub Repo Stars" src="https://img.shields.io/github/stars/mxyng/termhnal">
+  <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/mxyng/termhnal/total">
+  <img alt="GitHub Stargazers" src="https://img.shields.io/github/stars/mxyng/termhnal">
 </p>
 
 Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https://github.com/charmbracelet/bubbletea).
@@ -20,6 +20,10 @@ Requires Go 1.20 or higher.
 
 ```shell
 go install github.com/mxyng/termhnal@main
+```
+
+```shell
+docker run -it mxyng/termhnal
 ```
 
 ## Key Maps
