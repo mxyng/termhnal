@@ -13,9 +13,9 @@
   <img alt="GitHub Stargazers" src="https://img.shields.io/github/stars/mxyng/termhnal">
 </p>
 
-Browse Hacker News from the Terminal. Built with [charmbracelet/bubbletea](https://github.com/charmbracelet/bubbletea).
+Browse Hacker News in a Terminal. Built with [charmbracelet/bubbletea](https://github.com/charmbracelet/bubbletea).
 
-## Install
+## 👷 Install
 
 Requires Go 1.20 or higher.
 
@@ -23,15 +23,21 @@ Requires Go 1.20 or higher.
 go install github.com/mxyng/termhnal@main
 ```
 
+### :whale: Container Image
+
+```shell
+docker run -it ghcr.io/mxyng/termhnal
+```
+
 ```shell
 docker run -it mxyng/termhnal
 ```
 
-## Key Maps
+## :keyboard: Key Maps
 
 - <kbd>Ctrl+d</kbd> quit
 
-### List View
+### :notebook: List View
 
 - <kbd>1</kbd> top
 - <kbd>2</kbd> new
@@ -48,7 +54,7 @@ docker run -it mxyng/termhnal
 - <kbd>/</kbd> search
 - <kbd>q</kbd> <kbd>Esc</kbd> quit
 
-### Story View
+### :book: Story View
 
 - <kbd>k</kbd> <kbd>Up</kbd> scroll up
 - <kbd>j</kbd> <kbd>Down</kbd> scroll down
