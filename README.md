@@ -2,6 +2,7 @@
   <img alt="Termhnal Logo" src="https://github.com/user-attachments/assets/12071c2e-0aa0-453d-88e4-cc5517ddc01a">
   <img alt="GitHub License" src="https://img.shields.io/github/license/mxyng/termhnal">
   <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/mxyng/termhnal">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/mxyng/termhnal">
   <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/mxyng/termhnal/build.yaml">
   <img alt="GitHub Issues" src="https://img.shields.io/github/issues/mxyng/termhnal">
   <img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/mxyng/termhnal">
