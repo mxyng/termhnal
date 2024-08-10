@@ -1,8 +1,9 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
-	"sort"
+	"slices"
 	"strings"
 	"time"
 
@@ -84,10 +85,7 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 					return err
 				}
 
-				parent.Comments = append(parent.Comments, comment)
-				sort.Slice(parent.Comments, func(i, j int) bool {
-					return parent.Comments[i].Rank < parent.Comments[j].Rank
-				})
+				parent.AddComment(comment)
 
 				return ViewMsg[*Comment]{
 					Value: comment,
@@ -135,6 +133,9 @@ func (p *PaneView) View() string {
 func (p *PaneView) Render() {
 	p.content.Reset()
 	if s := p.Story; s != nil {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+
 		title := strings.TrimPrefix(s.Title(), fmt.Sprintf("%d. ", s.Rank+1))
 		fmt.Fprintln(&p.content, p.styleTitle.Render(title))
 
@@ -161,23 +162,29 @@ func (p *PaneView) Render() {
 			var lines []string
 			for _, comment := range comments {
 				if comment.By != "" {
-					var sb strings.Builder
+					render := func() string {
+						comment.mu.Lock()
+						defer comment.mu.Unlock()
 
-					by := p.styleCommentTitle.Render(comment.By)
-					if comment.By == s.By {
-						by = fmt.Sprintf("%s %s", by, p.styleOP.String())
+						var sb strings.Builder
+						by := p.styleCommentTitle.Render(comment.By)
+						if comment.By == s.By {
+							by = fmt.Sprintf("%s %s", by, p.styleOP.String())
+						}
+
+						fmt.Fprintln(&sb, by, p.styleCommentTitle.Copy().Faint(true).Render(humanize(time.Unix(comment.Time, 0))))
+
+						sb.WriteString(HTMLText(comment.Text))
+
+						if len(comment.Comments) > 0 {
+							fmt.Fprintln(&sb)
+							fmt.Fprint(&sb, view(style.Copy().Width(style.GetWidth()-h), comment.Comments))
+						}
+
+						return sb.String()
 					}
 
-					fmt.Fprintln(&sb, by, p.styleCommentTitle.Copy().Faint(true).Render(humanize(time.Unix(comment.Time, 0))))
-
-					sb.WriteString(HTMLText(comment.Text))
-
-					if len(comment.Comments) > 0 {
-						fmt.Fprintln(&sb)
-						fmt.Fprint(&sb, view(style.Copy().Width(style.GetWidth()-h), comment.Comments))
-					}
-
-					lines = append(lines, style.Render(sb.String()))
+					lines = append(lines, style.Render(render()))
 				}
 			}
 
@@ -295,8 +302,8 @@ func (p *PaneList) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		return p, bbt.Batch(cmds...)
 	case ListMsg[*Story]:
 		items := append(p.model.Items(), msg.Value)
-		sort.Slice(items, func(i, j int) bool {
-			return items[i].(*Story).Rank < items[j].(*Story).Rank
+		slices.SortFunc(items, func(i, j list.Item) int {
+			return cmp.Compare(i.(*Story).Rank, j.(*Story).Rank)
 		})
 
 		return p, p.model.SetItems(items)

@@ -1,9 +1,12 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
 	"net/url"
+	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	"golang.org/x/net/html"
@@ -20,6 +23,18 @@ type Item struct {
 	Type  string `json:"type"`
 
 	Comments []*Comment
+
+	mu sync.Mutex
+}
+
+func (i *Item) AddComment(c *Comment) {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+
+	i.Comments = append(i.Comments, c)
+	slices.SortFunc(i.Comments, func(i, j *Comment) int {
+		return cmp.Compare(i.Rank, j.Rank)
+	})
 }
 
 func humanize(t time.Time) string {
