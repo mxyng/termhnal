@@ -24,7 +24,7 @@ type Item struct {
 
 	Comments []*Comment
 
-	mu sync.Mutex
+	mu sync.RWMutex
 }
 
 func (i *Item) AddComment(c *Comment) {

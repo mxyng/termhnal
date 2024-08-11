@@ -133,9 +133,6 @@ func (p *PaneView) View() string {
 func (p *PaneView) Render() {
 	p.content.Reset()
 	if s := p.Story; s != nil {
-		s.mu.Lock()
-		defer s.mu.Unlock()
-
 		title := strings.TrimPrefix(s.Title(), fmt.Sprintf("%d. ", s.Rank+1))
 		fmt.Fprintln(&p.content, p.styleTitle.Render(title))
 
@@ -163,8 +160,8 @@ func (p *PaneView) Render() {
 			for _, comment := range comments {
 				if comment.By != "" {
 					render := func() string {
-						comment.mu.Lock()
-						defer comment.mu.Unlock()
+						comment.mu.RLock()
+						defer comment.mu.RUnlock()
 
 						var sb strings.Builder
 						by := p.styleCommentTitle.Render(comment.By)
@@ -190,6 +187,9 @@ func (p *PaneView) Render() {
 
 			return strings.Join(lines, "\n")
 		}
+
+		s.mu.RLock()
+		defer s.mu.RUnlock()
 
 		fmt.Fprintln(&p.content, view(styleComment.Copy().Width(p.style.GetWidth()-h), s.Comments))
 	}
