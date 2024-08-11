@@ -6,7 +6,7 @@
   <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/mxyng/termhnal/build.yaml">
   <img alt="GitHub Issues" src="https://img.shields.io/github/issues/mxyng/termhnal">
   <img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/mxyng/termhnal">
-  <img alt="Docker Image Version" src="https://img.shields.io/docker/v/mxyng/termhnal">
+  <img alt="Docker Image Version" src="https://img.shields.io/docker/v/mxyng/termhnal/latest">
   <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/mxyng/termhnal">
   <img alt="Docker Image Size" src="https://img.shields.io/docker/image-size/mxyng/termhnal">
   <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/mxyng/termhnal/total">
