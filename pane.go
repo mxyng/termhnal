@@ -79,18 +79,21 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		var cmds []bbt.Cmd
 		for i := range parent.Kids {
 			i := i
-			cmds = append(cmds, func() bbt.Msg {
-				comment, err := hn.Comment(i, parent.Kids[i])
-				if err != nil {
-					return err
-				}
+			if !slices.ContainsFunc(parent.Comments, func(c *Comment) bool {
+				return c.ID == parent.Kids[i]
+			}) {
+				cmds = append(cmds, func() bbt.Msg {
+					comment, err := hn.Comment(i, parent.Kids[i])
+					if err != nil {
+						return err
+					}
 
-				parent.AddComment(comment)
-
-				return ViewMsg[*Comment]{
-					Value: comment,
-				}
-			})
+					parent.AddComment(comment)
+					return ViewMsg[*Comment]{
+						Value: comment,
+					}
+				})
+			}
 		}
 
 		return cmds
