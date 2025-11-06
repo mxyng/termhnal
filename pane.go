@@ -102,8 +102,10 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		p.Render()
 		return p, bbt.Batch(comments(msg.Value.Item)...)
 	case ViewMsg[*Comment]:
-		p.Render()
-		return p, bbt.Batch(comments(msg.Value.Item)...)
+		if msg.Value != nil {
+			p.Render()
+			return p, bbt.Batch(comments(msg.Value.Item)...)
+		}
 	case bbt.KeyMsg:
 		switch msg.String() {
 		case "k", "up":
