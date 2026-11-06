@@ -1,5 +1,4 @@
 <p align="center">
-  <img alt="Termhnal Logo" src="https://github.com/user-attachments/assets/12071c2e-0aa0-453d-88e4-cc5517ddc01a">
   <img alt="GitHub License" src="https://img.shields.io/github/license/mxyng/termhnal">
   <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/mxyng/termhnal">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/mxyng/termhnal">
@@ -45,6 +44,7 @@ docker run -it mxyng/termhnal
 - <kbd>4</kbd> ask
 - <kbd>5</kbd> show
 - <kbd>6</kbd> jobs
+- <kbd>Enter</kbd> open story
 - <kbd>k</kbd> <kbd>Up</kbd> up
 - <kbd>j</kbd> <kbd>Down</kbd> down
 - <kbd>h</kbd> <kbd>Left</kbd> <kbd>PageUp</kbd> previous page
@@ -52,14 +52,27 @@ docker run -it mxyng/termhnal
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
 - <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
 - <kbd>/</kbd> search
-- <kbd>q</kbd> <kbd>Esc</kbd> quit
+- <kbd>Esc</kbd> clear search / quit
+- <kbd>Tab</kbd> focus header
 
 ### :book: Story View
 
 - <kbd>k</kbd> <kbd>Up</kbd> scroll up
 - <kbd>j</kbd> <kbd>Down</kbd> scroll down
-- <kbd>h</kbd> <kbd>Left</kbd> <kbd>PageUp</kbd> previous page
-- <kbd>l</kbd> <kbd>Right</kbd> <kbd>PageDown</kbd> next page
+- <kbd>u</kbd> half page up
+- <kbd>d</kbd> half page down
+- <kbd>b</kbd> <kbd>PageUp</kbd> previous page
+- <kbd>f</kbd> <kbd>Space</kbd> <kbd>PageDown</kbd> next page
 - <kbd>g</kbd> <kbd>Home</kbd> go to start
 - <kbd>Shift+g</kbd> <kbd>End</kbd> go to end
-- <kbd>q</kbd> <kbd>Esc</kbd> back to list
+- <kbd>Tab</kbd> focus header
+- <kbd>Esc</kbd> <kbd>Backspace</kbd> back to list
+
+### :bookmark: Header
+
+Focused with <kbd>Tab</kbd> or by scrolling past the top with <kbd>k</kbd>/<kbd>Up</kbd>.
+
+- <kbd>h</kbd> <kbd>Left</kbd> previous
+- <kbd>l</kbd> <kbd>Right</kbd> next
+- <kbd>Enter</kbd> select
+- <kbd>j</kbd> <kbd>Down</kbd> <kbd>Tab</kbd> back
