@@ -78,7 +78,6 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		hn := NewHN()
 		var cmds []bbt.Cmd
 		for i := range parent.Kids {
-			i := i
 			if !slices.ContainsFunc(parent.Comments, func(c *Comment) bool {
 				return c.ID == parent.Kids[i]
 			}) {
@@ -291,7 +290,6 @@ func (p *PaneList) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 
 		var cmds []bbt.Cmd
 		for i := range ids {
-			i := i
 			cmds = append(cmds, func() bbt.Msg {
 				story, err := hn.Story(i, ids[i])
 				if err != nil {
