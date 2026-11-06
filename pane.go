@@ -78,9 +78,7 @@ func (p *PaneView) Update(msg bbt.Msg) (Pane, bbt.Cmd) {
 		hn := NewHN()
 		var cmds []bbt.Cmd
 		for i := range parent.Kids {
-			if !slices.ContainsFunc(parent.Comments, func(c *Comment) bool {
-				return c.ID == parent.Kids[i]
-			}) {
+			if !parent.HasComment(parent.Kids[i]) {
 				cmds = append(cmds, func() bbt.Msg {
 					comment, err := hn.Comment(i, parent.Kids[i])
 					if err != nil {

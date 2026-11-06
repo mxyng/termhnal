@@ -31,12 +31,25 @@ func (i *Item) AddComment(c *Comment) {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 
-	if c != nil {
-		i.Comments = append(i.Comments, c)
-		slices.SortFunc(i.Comments, func(i, j *Comment) int {
-			return cmp.Compare(i.Rank, j.Rank)
-		})
+	if c == nil || slices.ContainsFunc(i.Comments, func(other *Comment) bool {
+		return other.ID == c.ID
+	}) {
+		return
 	}
+
+	i.Comments = append(i.Comments, c)
+	slices.SortFunc(i.Comments, func(i, j *Comment) int {
+		return cmp.Compare(i.Rank, j.Rank)
+	})
+}
+
+func (i *Item) HasComment(id int) bool {
+	i.mu.RLock()
+	defer i.mu.RUnlock()
+
+	return slices.ContainsFunc(i.Comments, func(c *Comment) bool {
+		return c.ID == id
+	})
 }
 
 func humanize(t time.Time) string {
