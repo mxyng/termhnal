@@ -1,6 +1,6 @@
 module github.com/mxyng/termhnal
 
-go 1.20
+go 1.27
 
 require (
 	github.com/charmbracelet/bubbles v0.17.1
@@ -8,8 +8,6 @@ require (
 	github.com/charmbracelet/lipgloss v0.9.1
 	golang.org/x/net v0.23.0
 )
-
-require github.com/muesli/reflow v0.3.0 // indirect
 
 require (
 	github.com/atotto/clipboard v0.1.4 // indirect
@@ -21,6 +19,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/muesli/ansi v0.0.0-20211018074035-2e021307bc4b // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
+	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sahilm/fuzzy v0.1.1-0.20230530133925-c48e322e2a8f // indirect

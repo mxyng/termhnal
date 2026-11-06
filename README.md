@@ -17,7 +17,7 @@ Browse Hacker News in a Terminal. Built with [charmbracelet/bubbletea](https://g
 
 ## 👷 Install
 
-Requires Go 1.20 or higher.
+Requires Go 1.27 or higher.
 
 ```shell
 go install github.com/mxyng/termhnal@main
