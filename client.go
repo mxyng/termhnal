@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -60,7 +60,7 @@ func (h *HN) items(kind string) ([]int, error) {
 	defer response.Body.Close()
 
 	var stories []int
-	if err := json.NewDecoder(response.Body).Decode(&stories); err != nil {
+	if err := json.UnmarshalRead(response.Body, &stories); err != nil {
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (h *HN) item(id int, item any) error {
 	}
 	defer response.Body.Close()
 
-	return json.NewDecoder(response.Body).Decode(item)
+	return json.UnmarshalRead(response.Body, item)
 }
 
 func (h *HN) Story(rank, id int) (*Story, error) {
